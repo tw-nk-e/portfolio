@@ -1,0 +1,28 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 80
+
+# Markdown: trailing spaces are significant (forced line breaks), no length limit
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+# Python: PEP 8 = 4-space indentation
+[*.py]
+indent_size = 4
+
+# Terraform: `terraform fmt` enforces 2-space indentation
+[*.{tf,tfvars}]
+indent_size = 2
+
+# YAML: spaces only (tabs are invalid)
+[*.{yaml,yml}]
+indent_size = 2
