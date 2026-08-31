@@ -1,5 +1,5 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
+import { Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 
@@ -49,6 +49,17 @@ const navbar = (
   <Navbar logo={logo} projectLink="https://github.com/USERNAME/mon-portfolio" />
 )
 
+// Search bar (Pagefind). Only the wording is customised here — the index is
+// loaded at runtime from /_pagefind/, produced by the `postbuild` script.
+const search = (
+  <Search
+    placeholder="Rechercher…"
+    loading="Chargement…"
+    emptyResult="Aucun résultat."
+    errorText="Index de recherche indisponible."
+  />
+)
+
 // Page footer.
 const footer = (
   <Footer>
@@ -64,13 +75,14 @@ export default async function RootLayout({ children }) {
         <Layout
           navbar={navbar}
           footer={footer}
-          // Builds the left sidebar from the content/ folder
+          search={search}
+          // Alimente la sidebar de gauche à partir du dossier content/
           pageMap={await getPageMap()}
-          // Target of the "Edit this page" link
+          // Lien "Éditer cette page" -> pointe vers ton repo
           docsRepositoryBase="https://github.com/USERNAME/mon-portfolio/tree/main"
-          // A resume needs no docs sidebar: keep it collapsed and unobtrusive
+          // Un CV n'a pas vraiment de "sidebar de docs" : on la garde discrète.
           sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: true }}
-          // Docs-only links, irrelevant here
+          // Disable some links
           editLink={null}
           feedback={{ content: null }}
         >

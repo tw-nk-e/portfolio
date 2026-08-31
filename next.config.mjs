@@ -2,9 +2,11 @@ import nextra from 'nextra'
 
 // Nextra turns the MDX files into pages.
 const withNextra = nextra({
-  // Pagefind search is off: its post-build indexing step easily breaks the
-  // static export (first "level-up" exercise, see README).
-  search: false
+  // Pagefind search. Nextra only marks up the HTML here (`data-pagefind-body`
+  // on <main>); the index itself is built by the `postbuild` script.
+  // `codeblocks: false` tags every <pre> with `data-pagefind-ignore` so code
+  // samples never pollute the results.
+  search: { codeblocks: false }
 })
 
 // Sub-path the site is served from, injected by the GitHub Actions workflow

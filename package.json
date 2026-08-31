@@ -4,8 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node -e \"require('fs').existsSync('public/_pagefind')||console.warn('\\n[search] Index Pagefind absent: run npm run build once to enable development mode.\\n')\"",
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "npm run search:index",
+    "search:clean": "node -e \"const r=require('fs').rmSync,o={recursive:true,force:true};r('out/_pagefind',o);r('public/_pagefind',o)\"",
+    "search:index": "npm run search:clean && pagefind --site out --output-path out/_pagefind && pagefind --site out --output-path public/_pagefind",
     "start": "next start"
   },
   "dependencies": {
@@ -17,5 +21,8 @@
   },
   "overrides": {
     "postcss": "^8.5.26"
+  },
+  "devDependencies": {
+    "pagefind": "1.5.2"
   }
 }
