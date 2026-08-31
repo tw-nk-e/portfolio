@@ -3,7 +3,7 @@ import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 
-// Métadonnées globales (onglet du navigateur, SEO, partage social).
+// Site-wide metadata (browser tab, SEO, social sharing).
 export const metadata = {
   title: {
     default: 'mdevoulx - Technical Leader Cloud & more.',
@@ -15,8 +15,7 @@ export const metadata = {
     'qui aide équipes et entreprises à réussir sur le Cloud.'
 }
 
-// Le logo de la navbar. `logo` accepte n'importe quel JSX : on combine ici une
-// icône SVG inline, le nom, et une courte accroche.
+// Navbar logo. `logo` accepts any JSX: inline SVG icon + tagline.
 const logo = (
   <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
     <svg
@@ -45,12 +44,12 @@ const logo = (
   </span>
 )
 
-// La barre de navigation en haut.
+// Top navigation bar.
 const navbar = (
   <Navbar logo={logo} projectLink="https://github.com/USERNAME/mon-portfolio" />
 )
 
-// Le pied de page.
+// Page footer.
 const footer = (
   <Footer>
     © {new Date().getFullYear()} Maxime DEVOULX — Construit avec Nextra.
@@ -65,13 +64,13 @@ export default async function RootLayout({ children }) {
         <Layout
           navbar={navbar}
           footer={footer}
-          // Alimente la sidebar de gauche à partir du dossier content/
+          // Builds the left sidebar from the content/ folder
           pageMap={await getPageMap()}
-          // Lien "Éditer cette page" -> pointe vers ton repo
+          // Target of the "Edit this page" link
           docsRepositoryBase="https://github.com/USERNAME/mon-portfolio/tree/main"
-          // Un CV n'a pas vraiment de "sidebar de docs" : on la garde discrète.
+          // A resume needs no docs sidebar: keep it collapsed and unobtrusive
           sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: true }}
-          // Disable some links
+          // Docs-only links, irrelevant here
           editLink={null}
           feedback={{ content: null }}
         >

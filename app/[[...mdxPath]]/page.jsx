@@ -1,13 +1,13 @@
-// Route "attrape-tout" : c'est la passerelle entre les URLs et tes fichiers
-// MDX dans content/. Ex: /about  ->  content/about.mdx
+// Catch-all route mapping URLs to MDX files in content/.
+// e.g. /about -> content/about.mdx
 import { generateStaticParamsFor, importPage } from 'nextra/pages'
 import { useMDXComponents as getMDXComponents } from '../../mdx-components'
 
-// Génère au build une page HTML statique pour chaque MDX (indispensable
-// pour l'export statique / GitHub Pages).
+// Pre-renders one static HTML page per MDX file at build time, required for
+// the static export / GitHub Pages.
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
-// Métadonnées par page, lues depuis le frontmatter du MDX.
+// Per-page metadata, read from the MDX frontmatter.
 export async function generateMetadata(props) {
   const params = await props.params
   const { metadata } = await importPage(params.mdxPath)

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import styles from './cert-card.module.css'
 
-// Formate une date ISO ('2029-10-10') en 'Oct 2029'
+// Formats an ISO date ('2029-10-10') as 'Oct 2029'
 function formatExpiry(iso) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return null
@@ -9,13 +9,13 @@ function formatExpiry(iso) {
 }
 
 /**
- * Grille de cartes de certification.
+ * Grid of certification cards.
  *
- * Chaque item : { title, href, image, expires? }
- *  - `expires` : date ISO 'YYYY-MM-DD' (optionnelle).
- *     Si absente  -> aucun statut affiché (certif "en cours").
- *     Si passée   -> badge grisé + pastille "Expired".
- *     Si à venir  -> pastille "Active · until <mois année>".
+ * Item shape: { title, href, image, expires? }
+ * `expires` is an optional ISO 'YYYY-MM-DD' date driving the status:
+ *  - missing -> no status (certification in progress)
+ *  - past    -> dimmed badge + "Expired" pill
+ *  - future  -> "Active · until <month year>" pill
  */
 export function Certifications({ items = [] }) {
   const now = new Date()
