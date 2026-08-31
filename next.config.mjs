@@ -24,7 +24,7 @@ const nextConfig = {
   },
   basePath,
   // Utile pour GitHub Pages : ajoute un slash final -> /about/ au lieu de /about
-  trailingSlash: true,
+  // trailingSlash: true,
 }
 
 export default withNextra(nextConfig)
