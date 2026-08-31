@@ -1,9 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,visualstudiocode,nextjs,node,git,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,visualstudiocode,nextjs,node,git,react
 
-### devcontainer ###
-.devcontainer/devcontainer-lock.json
-
 ### Git ###
 # Created by git for backups. To disable backups in Git:
 # $ git config --global mergetool.keepBackup false
@@ -127,6 +124,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+package-lock.json
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
