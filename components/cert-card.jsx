@@ -1,6 +1,12 @@
 import Image from 'next/image'
 import styles from './cert-card.module.css'
 
+// `public/` assets are served from the site sub-path (/<repo>/img/...) but Next
+// does not add it to the URLs we write ourselves, so do it here.
+// Empty on a user site and in `next dev`.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+const asset = path => (path.startsWith('/') ? basePath + path : path)
+
 // Formats an ISO date ('2029-10-10') as 'Oct 2029'
 function formatExpiry(iso) {
   const d = new Date(iso)
@@ -36,7 +42,7 @@ export function Certifications({ items = [] }) {
           >
             <Image
               className={styles.badge}
-              src={cert.image}
+              src={asset(cert.image)}
               alt={cert.title}
               width={72}
               height={72}

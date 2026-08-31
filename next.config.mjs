@@ -20,6 +20,13 @@ const nextConfig = {
     unoptimized: true, // Mandatory with `output: export`.
   },
   basePath,
+  // `basePath` prefixes the routes and the Next.js bundles, but NOT the files
+  // served from `public/`: those URLs have to be prefixed by hand. Exposing the
+  // value here inlines it at build time so the components can do it
+  // (see components/cert-card.jsx).
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   // Useful for GitHub Pages: adds a trailing slash -> /about/ instead of /about .
   trailingSlash: true,
 }
