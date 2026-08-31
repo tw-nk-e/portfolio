@@ -25,8 +25,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
-        # Automatically sets the correct `base_path`.
-        - uses: actions/configure-pages@v6
+      # Automatically sets the correct `base_path`.
+      - uses: actions/configure-pages@v6
       # Install npm dependencies for CI/CD.
       - name: pre_build
         run: npm ci
