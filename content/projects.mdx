@@ -1,0 +1,38 @@
+---
+title: Projets
+description: Projets personnels et open source de Prénom Nom.
+---
+
+import { Cards } from 'nextra/components'
+
+# Projets
+
+Une sélection de choses que j'ai construites. Le code est sur GitHub.
+
+<Cards>
+  <Cards.Card
+    title="Ce portfolio"
+    href="https://github.com/USERNAME/mon-portfolio"
+    arrow
+  />
+  <Cards.Card
+    title="Projet 2 — un mot sur ce que ça fait"
+    href="https://github.com/USERNAME/projet-2"
+    arrow
+  />
+  <Cards.Card
+    title="Projet 3 — un mot sur ce que ça fait"
+    href="https://github.com/USERNAME/projet-3"
+    arrow
+  />
+</Cards>
+
+## Ce portfolio, en détail
+
+Site statique en **MDX** rendu par **Nextra 4**, déployé automatiquement sur
+GitHub Pages via GitHub Actions à chaque push sur `main`. Pas de serveur à
+maintenir : le build produit du HTML statique.
+
+Ce que ça m'a appris : la structure App Router de Next.js, la génération de
+pages statiques, et le fonctionnement d'un pipeline de déploiement de bout en
+bout.

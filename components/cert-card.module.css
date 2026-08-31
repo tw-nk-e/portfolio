@@ -1,0 +1,108 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
+}
+
+.badge {
+  flex-shrink: 0;
+  transition:
+    filter 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.title {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.pillActive,
+.pillExpired {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pillActive {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.pillExpired {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.date {
+  opacity: 0.6;
+}
+
+/* État expiré : on grise le badge et on atténue le titre */
+.isExpired .badge {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.isExpired .title {
+  opacity: 0.7;
+}
+
+/* Thème sombre : Nextra ajoute la classe `dark` sur <html> */
+:global(html.dark) .card {
+  border-color: #2b2b2b;
+  background: #111111;
+}
+
+:global(html.dark) .card:hover {
+  border-color: #3a3a3a;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+:global(html.dark) .pillActive {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+:global(html.dark) .pillExpired {
+  background: rgba(255, 255, 255, 0.08);
+  color: #9ca3af;
+}
