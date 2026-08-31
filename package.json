@@ -6,6 +6,7 @@
   "scripts": {
     "predev": "node -e \"require('fs').existsSync('public/_pagefind')||console.warn('\\n[search] Index Pagefind absent: run npm run build once to enable development mode.\\n')\"",
     "dev": "next dev",
+    "prebuild": "npm run search:clean",
     "build": "next build",
     "postbuild": "npm run search:index",
     "search:clean": "node -e \"const r=require('fs').rmSync,o={recursive:true,force:true};r('out/_pagefind',o);r('public/_pagefind',o)\"",
