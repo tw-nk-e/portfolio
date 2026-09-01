@@ -1,0 +1,50 @@
+/*
+ * Site-wide backdrop: the dot field the Magic Portfolio template shows behind
+ * its hero. In that project it is Once UI's <Background> with only `dots`
+ * enabled (opacity 40) and a radial mask anchored top-centre — gradient, grid
+ * and lines are all off. This is that, in CSS, with no runtime.
+ *
+ * Why a dedicated element rather than extra background layers on <html>:
+ * Nextra paints `html { background: rgb(var(--nextra-bg)) }` from an inline
+ * <style> that its <Head> injects *after* our stylesheets, so we would lose
+ * that cascade at equal specificity.
+ *
+ * And why the rule on <body>: it has no background of its own and forms no
+ * stacking context, so a negative z-index child would fall through to the root
+ * context and hide behind <html>'s background. Making <body> a stacking
+ * context puts the backdrop above that background and below every bit of
+ * content, with nothing else to adjust.
+ */
+body {
+  position: relative;
+  z-index: 0;
+}
+
+.site-backdrop {
+  --dot-color: rgba(139, 92, 246, 0.3);
+  --dot-gap: 22px;
+
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+  background-size: var(--dot-gap) var(--dot-gap);
+
+  /* Fades the field out away from the top, as the template's mask does. */
+  -webkit-mask-image: radial-gradient(
+    110% 60% at 50% 0%,
+    #000 0%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(110% 60% at 50% 0%, #000 0%, transparent 72%);
+}
+
+/*
+ * Nextra sets `.dark` on <html>. Dots need a touch more presence on a dark
+ * ground to read at the same strength.
+ */
+html.dark .site-backdrop {
+  --dot-color: rgba(139, 92, 246, 0.38);
+}
