@@ -1,0 +1,289 @@
+/*
+ * `clear` is load-bearing. Nextra renders its "Copy page" button as a
+ * `float: inline-end` div inside <article>, just before <main>. <main> opens no
+ * new formatting context, so that float shortens the line boxes at the top of
+ * the content — and `text-align: center` then centres the text inside the
+ * *shortened* line box, pushing the first lines off to the left.
+ * Clearing drops the hero below the float so every line gets the full width.
+ */
+.hero {
+  clear: both;
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+}
+
+/*
+ * Centred with flex rather than by inheriting `text-align` from .hero: the
+ * badge is the only inline-block in the hero, so it was the one element whose
+ * alignment depended on nothing but inheritance. Flex makes it explicit and
+ * immune to anything the theme sets on descendants.
+ */
+.badgeRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.1rem;
+}
+
+/*
+ * Animated gradient border, in the spirit of Aceternity's HoverBorderGradient
+ * but without the motion/Tailwind stack it needs.
+ *
+ * .badge is a 1px-padded pill clipping its content; .badgeGlow travels behind
+ * it, and the inner pill hides everything but that 1px rim.
+ *
+ * Two implementations, see the @supports block below for why.
+ */
+.badge {
+  /*
+   * The one knob for the border animation: how long a full lap takes. Higher
+   * is slower — 3s is brisk, 5s calm, 8s barely moving. Both implementations
+   * below read it, so this is the only line to touch.
+   */
+  --badge-speed: 5s;
+
+  position: relative;
+  display: inline-flex;
+  padding: 1px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+/*
+ * Fallback: a square carrying a conic gradient, spinning on its own axis.
+ * Universal support, but a conic gradient advances at a constant *angular*
+ * speed. On this pill (~8:1) that maps to wildly uneven speed along the
+ * border — roughly 0.2px/deg mid-edge against 10px/deg at the rounded ends,
+ * so the highlight crawls then whips around the caps.
+ */
+.badgeGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    #8b5cf6 320deg,
+    transparent 360deg
+  );
+  animation: badge-rotate var(--badge-speed) linear infinite;
+}
+
+@keyframes badge-rotate {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/*
+ * Preferred: a soft glow walking the *actual* outline. `offset-distance` is a
+ * distance along the path, so the speed is constant in pixels whatever the
+ * badge's proportions — the unevenness above disappears by construction.
+ *
+ * `top/left: 0` is required: the motion-path transform is expressed in the
+ * containing block's coordinates, so the element's own origin has to sit on
+ * that origin for the path to line up.
+ */
+@supports (offset-path: rect(0% 100% 100% 0% round 999px)) {
+  .badgeGlow {
+    top: 0;
+    left: 0;
+    width: 3.5rem;
+    translate: none;
+    background: radial-gradient(
+      circle closest-side,
+      #8b5cf6,
+      rgba(139, 92, 246, 0)
+    );
+    offset-path: rect(0% 100% 100% 0% round 999px);
+    offset-rotate: 0deg;
+    animation: badge-travel var(--badge-speed) linear infinite;
+  }
+}
+
+@keyframes badge-travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.badgeInner {
+  position: relative;
+  border-radius: inherit;
+  padding: 0.25rem 0.75rem;
+  background: #ffffff;
+  color: #6d28d9;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/*
+ * An endless loop is not worth forcing on anyone who asked for stillness.
+ * Hidden rather than merely paused: a frozen animation would leave the glow
+ * parked on the rim as a stray bright spot. The badge keeps its plain border.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .badgeGlow {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/*
+ * `max-width` here is a soft cap, not a target: it only stops the headline
+ * spanning the full column on wide screens. Keep it generous — `text-wrap:
+ * balance` can only equalise the lines it is allowed to form, so a tight cap
+ * forces a single possible break and produces a staircase.
+ */
+.headline {
+  margin: 0 auto;
+  max-width: 30ch;
+  font-size: clamp(2rem, 4.5vw + 1rem, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.subline {
+  margin: 1rem auto 0;
+  max-width: 44ch;
+  font-size: clamp(1.05rem, 1vw + 0.9rem, 1.3rem);
+  line-height: 1.55;
+  color: #52525b;
+  text-wrap: balance;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  /* No gap: the arrow carries its own margin so the spacing animates with it. */
+  padding: 0.6rem 1.15rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/*
+ * No lift on hover. It stays responsive — it is a link, it has to answer the
+ * pointer — but nothing moves: border and shadow shift, and the arrow slides.
+ */
+.button:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/*
+ * Once UI's <Arrow>, rebuilt in CSS. It is not a glyph: two bars pinned to the
+ * right edge, collapsed to zero width at rest. On hover they grow and rotate
+ * ±45° about their right end, drawing a chevron, while their container widens
+ * so the button opens up to make room.
+ *
+ * Upstream wires this with mouseenter/mouseleave listeners on the trigger
+ * element; `:hover` does the same with no JavaScript at all.
+ *
+ * Timing is Once UI's own: --transition-duration-micro-medium (0.2s) eased.
+ */
+.arrow {
+  --arrow-span: 1rem;
+  --arrow-head: 0.5rem;
+  --arrow-thickness: 1.5px;
+
+  position: relative;
+  width: 0;
+  height: var(--arrow-span);
+  margin-left: 0;
+  transition:
+    width 0.2s ease-in-out,
+    margin-left 0.2s ease-in-out;
+}
+
+.arrow::before,
+.arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: calc(var(--arrow-thickness) / -2);
+  width: 0;
+  height: var(--arrow-thickness);
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: right center;
+  transition:
+    width 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+/* `:focus-visible` too, so the affordance is not mouse-only. */
+.button:hover .arrow,
+.button:focus-visible .arrow {
+  width: var(--arrow-span);
+  margin-left: 0.45rem;
+}
+
+.button:hover .arrow::before,
+.button:focus-visible .arrow::before {
+  width: var(--arrow-head);
+  transform: rotate(45deg);
+}
+
+.button:hover .arrow::after,
+.button:focus-visible .arrow::after {
+  width: var(--arrow-head);
+  transform: rotate(-45deg);
+}
+
+/* Dark theme: Nextra sets the `dark` class on <html> */
+:global(html.dark) .subline {
+  color: #a1a1aa;
+}
+
+:global(html.dark) .badge {
+  background: #2b2b2b;
+}
+
+:global(html.dark) .badgeInner {
+  background: #111111;
+  color: #c4b5fd;
+}
+
+:global(html.dark) .button {
+  border-color: #2b2b2b;
+  background: #111111;
+}
+
+:global(html.dark) .button:hover {
+  border-color: #3a3a3a;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/*
+ * The arrow still appears — it is an affordance, not decoration — but without
+ * the sweep.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .arrow,
+  .arrow::before,
+  .arrow::after {
+    transition: none;
+  }
+}
