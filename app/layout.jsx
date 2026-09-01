@@ -1,7 +1,9 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
+import { Layout, Navbar } from 'nextra-theme-docs'
 import { Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
+import { SiteFooter } from '../components/site-footer'
 import 'nextra-theme-docs/style.css'
+import './globals.css'
 
 // Site-wide metadata (browser tab, SEO, social sharing).
 export const metadata = {
@@ -60,18 +62,16 @@ const search = (
   />
 )
 
-// Page footer.
-const footer = (
-  <Footer>
-    © {new Date().getFullYear()} Maxime DEVOULX — Construit avec Nextra.
-  </Footer>
-)
+// Page footer. Content and styling live in components/site-footer.jsx.
+const footer = <SiteFooter />
 
 export default async function RootLayout({ children }) {
   return (
     <html lang="fr" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
+        {/* Decorative dot field, behind everything, on every page. */}
+        <div className="site-backdrop" aria-hidden="true" />
         <Layout
           navbar={navbar}
           footer={footer}
@@ -85,6 +85,11 @@ export default async function RootLayout({ children }) {
           // Disable some links
           editLink={null}
           feedback={{ content: null }}
+          // "Copy page" copies the raw MDX for pasting into an LLM. Useful on
+          // documentation, not on a portfolio. Note this is global: the theme
+          // reads it from a context set once here, and exposes no per-page
+          // front matter for it.
+          copyPageButton={false}
         >
           {children}
         </Layout>
