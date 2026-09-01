@@ -1,0 +1,47 @@
+/*
+ * The class is doubled on purpose. Nextra's utility sheet is loaded *after* our
+ * CSS modules, so `x:py-12` (3rem top and bottom) would win against a single
+ * class no matter what we put here. Repeating it raises specificity to (0,2,0)
+ * and settles it whatever the load order.
+ *
+ * 1.25rem either side lands the footer at roughly 60px against the navbar's
+ * 64px (--nextra-navbar-height), which is what makes the two read as a pair.
+ */
+.footer.footer {
+  padding-block: 1.25rem;
+}
+
+/*
+ * `width: 100%` is doing the alignment work. The theme's <footer> is a flex row
+ * with `justify-center` (and `md:justify-start`); a child that fills the row
+ * leaves nothing to distribute, so the content sits flush left at every width.
+ *
+ * `flex-wrap` is the safety net: on a very narrow screen the row breaks instead
+ * of overflowing.
+ */
+.inner {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.logo {
+  display: block;
+  /* The source SVG already carries its rounded corners (rx 96 of a 512 box). */
+  width: 18px;
+  height: 18px;
+}
+
+.separator {
+  opacity: 0.3;
+  user-select: none;
+}
+
+.muted {
+  opacity: 0.7;
+}
