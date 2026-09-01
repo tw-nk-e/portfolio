@@ -1,0 +1,63 @@
+/*
+ * The mask is four times wider than the element and its right half fades to
+ * transparent. Sliding it from `100% 0` to `0 0` therefore walks the soft edge
+ * across the content from left to right — that sweep is the whole effect.
+ * Blur and vertical lift ride along on the same timing.
+ *
+ * Values taken from Once UI's RevealFx.module.scss.
+ */
+.reveal {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 25%,
+    transparent 50%
+  );
+  mask-image: linear-gradient(to right, black 0%, black 25%, transparent 50%);
+  -webkit-mask-size: 400% 100%;
+  mask-size: 400% 100%;
+  animation: reveal var(--reveal-duration, 2s) ease-in-out
+    var(--reveal-delay, 0s) both;
+}
+
+/*
+ * Once UI blurs by 1rem. At 16px on a 52px headline the text becomes a cloud,
+ * and since `filter` is applied *before* the mask, that cloud gets sliced flat
+ * at the element's edges — a visible rectangle around the text for most of the
+ * animation. 0.35rem keeps the soft-focus feel without the smear.
+ *
+ * The opacity fade is ours: upstream goes from fully masked to fully opaque
+ * with nothing in between, which is what makes the arrival feel abrupt.
+ */
+@keyframes reveal {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+    filter: blur(0.35rem);
+    opacity: 0;
+    transform: translateY(var(--reveal-translate-y, 0));
+  }
+
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    filter: blur(0);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * Once UI strips the mask once the transition ends. We cannot drop a property
+ * mid-animation in pure CSS, but the end state (`0 0`) puts the fully opaque
+ * quarter of the gradient over the whole element, so nothing is clipped.
+ */
+
+/* Honour the OS "reduce motion" setting: land on the final state immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    -webkit-mask-image: none;
+    mask-image: none;
+    animation: none;
+  }
+}
