@@ -1,0 +1,80 @@
+---
+title: Maxime DEVOULX — Technical Leader Cloud (AWS) & DevOps
+description: Concevez des plateformes AWS solides, sécurisées et automatisées, pensées pour durer. Maxime DEVOULX est un expert Cloud AWS fort de plus de 10 ans d'expérience, qui aide équipes et entreprises à réussir sur le Cloud.
+---
+
+import { Cards } from 'nextra/components'
+import { Callout } from 'nextra/components'
+import { Certifications } from '../components/cert-card'
+
+# Maxime DEVOULX
+
+<Callout type="important" emoji="☁️">
+  Master AWS & DevOps with Industry Expertise.
+</Callout>
+
+> D'administrateur systèmes & réseaux à Technical Leader Cloud (AWS), je conçois des architectures AWS complètes — et je les fais dialoguer avec vos environnements On-Premises. Automatisées, robustes et sécurisées, pour qu'elles tiennent dans le temps.
+
+<Cards>
+  <Cards.Card title="About" href="/about"/>
+  <Cards.Card title="Experiences" href="/experience"/>
+  <Cards.Card title="Projects" href="/projects"/>
+</Cards>
+
+## Mon expertise
+
+Une approche Cloud 360, de la conception au run :
+
+- **CloudOps** — Concevoir et opérer des architectures AWS complètes, du design au run (niveau Solutions Architect Professional).
+- **NetOps** — Interconnecter AWS et vos environnements On-Premises : Direct Connect, Transit Gateway, BGP.
+- **DevOps & GitOps** — Automatiser les déploiements en Infrastructure as Code : Terraform, CloudFormation, GitHub Actions.
+- **SecOps** — Sécuriser *by design*, en s'appuyant sur le Well-Architected Framework.
+- **FinOps** — Analyser et optimiser les coûts, dimensionner les architectures actuelles et à venir.
+
+## Certifications
+
+<Certifications
+  items={[
+    {
+      title: 'AWS Certified Solutions Architect – Professional',
+      href: 'https://aws.amazon.com/certification/certified-solutions-architect-professional',
+      image: '/img/aws-sap.png',
+      expires: '2029-10-10',
+    },
+    {
+      title: 'AWS Certified Security – Specialty',
+      href: 'https://aws.amazon.com/certification/certified-security-specialty/',
+      image: '/img/aws-security.png',
+      expires: '2026-08-26',
+    }
+  ]}
+/>
+
+## Me contacter
+
+- **Email** — prenom.nom@example.com
+- **GitHub** — [github.com/USERNAME](https://github.com/USERNAME)
+- **LinkedIn** — [linkedin.com/in/USERNAME](https://linkedin.com/in/USERNAME)
+
+
+import { Hero } from '../components/hero'
+import { Typewriter } from '../components/typewriter'
+
+<Hero
+  headline="Concevoir des plateformes AWS qui tiennent dans le temps"
+  badge="Cloud Architect AWS · DevOps"
+  subline={
+    <>
+      Je suis Maxime, <strong>Technical Leader Cloud (AWS)</strong>. Je conçois
+      des architectures complètes et je les fais dialoguer avec vos
+      environnements On-Premises — automatisées, robustes et sécurisées.
+    </>
+  }
+  cta={{ label: 'About me', href: '/about' }}
+/>
+
+<Typewriter
+  text={['CloudOps', 'NetOps', 'DevOps & GitOps', 'SecOps', 'FinOps']}
+  speed={100}
+  loop={true}
+/>

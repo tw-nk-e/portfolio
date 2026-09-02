@@ -8,9 +8,10 @@ export default {
     display: 'hidden',
     // `pagination: false`: `display: 'hidden'` shifts the navigation index, so
     // "next page" would point to Experience instead of About.
-    theme: { toc: false, sidebar: false, breadcrumb: false, pagination: false }
+    theme: { toc: false, sidebar: false, breadcrumb: false, pagination: false },
   },
-  about: 'About',
-  experience: 'Experiences',
-  projects: 'Projects',
+  about: {
+    title: 'About Me',
+    theme: { breadcrumb: false }
+  }
 }
