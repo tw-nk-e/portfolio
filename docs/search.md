@@ -1,34 +1,33 @@
-# Moteur de recherche (Pagefind)
+# Search engine (Pagefind)
 
-Adaptation de la [doc Nextra](https://nextra.site/docs/guide/search) à **ce**
-projet : export statique (`output: 'export'`) + `basePath` variable + GitHub
+The [Nextra guide](https://nextra.site/docs/guide/search) adapted to **this**
+project: static export (`output: 'export'`), a variable `basePath`, and GitHub
 Pages.
 
-Nextra 4 utilise [Pagefind](https://pagefind.app) : un moteur de recherche
-100 % client. Il indexe les fichiers **`.html` déjà construits** — il n'y a donc
-pas d'index tant qu'un build n'a pas eu lieu, et aucun serveur n'est nécessaire
-à l'exécution.
+Nextra 4 uses [Pagefind](https://pagefind.app), a fully client-side search
+engine. It indexes the **`.html` files that have already been built** — so
+there is no index until a build has run, and nothing is needed at runtime.
 
-## Ce qui a été mis en place
+## What is in place
 
-| Fichier | Rôle |
+| File | Role |
 | --- | --- |
-| `package.json` | `pagefind` en `devDependency` + scripts `postbuild` / `search:*` |
+| `package.json` | `pagefind` as a `devDependency`, plus the `postbuild` / `search:*` scripts |
 | `next.config.mjs` | `search: { codeblocks: false }` |
-| `app/layout.jsx` | `<Search>` avec les libellés en français |
-| `.gitignore` | `/public/_pagefind/` (index généré, jamais commité) |
+| `app/layout.jsx` | `<Search>` with French labels |
+| `.gitignore` | `/public/_pagefind/` (generated index, never committed) |
 
-### Le point clé : deux copies de l'index
+### The crux: two copies of the index
 
-Pagefind ne sait écrire que dans **un** dossier à la fois, mais les deux modes
-de fonctionnement ne lisent pas au même endroit :
+Pagefind writes to **one** directory at a time, but the two ways of running the
+site read from different places:
 
-- **`npm run dev`** sert les fichiers statiques depuis `public/` →
-  il lui faut `public/_pagefind/`
-- **export statique** (`out/`) est produit par `next build`, donc *avant* que
-  l'index n'existe → il lui faut `out/_pagefind/` écrit après coup
+- **`npm run dev`** serves static files out of `public/` → it needs
+  `public/_pagefind/`
+- **the static export** (`out/`) is produced by `next build`, so *before* the
+  index exists → it needs `out/_pagefind/`, written afterwards
 
-D'où la double génération dans `search:index` :
+Hence the double pass in `search:index`:
 
 ```json filename="package.json"
 "predev": "node -e \"require('fs').existsSync('public/_pagefind')||console.warn('...')\"",
@@ -39,103 +38,104 @@ D'où la double génération dans `search:index` :
 "search:index": "npm run search:clean && pagefind --site out --output-path out/_pagefind && pagefind --site out --output-path public/_pagefind"
 ```
 
-Notes :
+Notes:
 
-- `prebuild` / `postbuild` sont des **hooks npm natifs** : ils s'exécutent tout
-  seuls autour de `npm run build`, en local comme dans la CI. Rien à ajouter au
+- `prebuild` and `postbuild` are **native npm hooks**: they run on their own
+  around `npm run build`, locally and in CI alike. Nothing to add to the
   workflow.
-- `prebuild` est indispensable : `public/` est une **entrée** de `next build`
-  (Next le recopie dans `out/`). Sans nettoyage préalable, le build recopierait
-  l'index du run précédent dans `out/_pagefind` avant que `postbuild` ne le
-  régénère. Ça s'auto-répare, mais si le build échoue entre l'export et
-  l'indexation, `out/` contient un index périmé d'apparence valide. On coupe la
-  boucle entrée/sortie à la source.
-- L'index est construit depuis `out/` (le vrai HTML exporté), pas depuis
-  `.next/server/app` comme le montre la doc générique de Nextra : avec
-  `output: 'export'` c'est `out/` qui fait foi, et les URLs y sont déjà
-  correctes grâce à `trailingSlash: true`.
-- `search:clean` évite l'accumulation de fragments périmés : Pagefind
-  **n'efface pas** son dossier de sortie avant d'écrire. Sans ce nettoyage,
-  `public/_pagefind/fragment/` grossit à chaque build.
-- `predev` se contente d'**avertir** si l'index manque — il ne bloque jamais
+- `prebuild` is not optional. `public/` is an **input** to `next build` (Next
+  copies it into `out/`), so without a prior clean the build would carry the
+  previous run's index into `out/_pagefind` before `postbuild` regenerates it.
+  That self-heals — but if the build fails between the export and the indexing,
+  `out/` is left holding a stale index that still looks valid. Cutting the
+  input/output loop at the source avoids the whole class of problem.
+- The index is built from `out/` — the HTML that actually ships — not from
+  `.next/server/app` as Nextra's generic guide shows. With `output: 'export'`,
+  `out/` is the source of truth, and its URLs are already correct thanks to
+  `trailingSlash: true`.
+- `search:clean` prevents stale fragments piling up: Pagefind **does not** wipe
+  its output directory before writing. Without it, `public/_pagefind/fragment/`
+  grows with every build.
+- `predev` only ever **warns** when the index is missing. It never blocks
   `npm run dev`.
 
-## Utilisation en local (`npm run dev`)
+## Running locally (`npm run dev`)
 
 ```sh
 npm install
-npm run build   # obligatoire une fois : c'est lui qui crée l'index
+npm run build   # required once: this is what creates the index
 npm run dev
 ```
 
-La recherche est alors disponible sur <http://localhost:3000>.
+Search is then available at <http://localhost:3000>.
 
 > [!IMPORTANT]
 >
-> L'index est un **instantané du dernier build**. En dev, modifier une page MDX
-> met à jour la page à chaud, mais *pas* les résultats de recherche. Relancez
-> `npm run build` (ou juste `npm run search:index`) pour réindexer.
+> The index is a **snapshot of the last build**. In development, editing an MDX
+> page updates the page live but *not* the search results. Run `npm run build`
+> again — or just `npm run search:index` — to reindex.
 
-Sans index, `next dev` renvoie 404 sur `/_pagefind/pagefind.js` : la barre de
-recherche affiche « Index de recherche indisponible » et la console logue
-`[nextra] Error while loading { pathSegments: [ '_pagefind', ... ] }`. C'est
-attendu, ce n'est pas un crash — le site reste parfaitement navigable.
+With no index, `next dev` returns 404 on `/_pagefind/pagefind.js`: the search
+box reports "Index de recherche indisponible" and the console logs
+`[nextra] Error while loading { pathSegments: [ '_pagefind', ... ] }`. That is
+expected, not a crash — the site stays perfectly usable.
 
-## Utilisation sur GitHub Pages
+## Running on GitHub Pages
 
-Le workflow `.github/workflows/deploy.yml` lance `npm ci` puis `npm run build`.
-`postbuild` s'enchaîne automatiquement, et `out/_pagefind/` part dans
-l'artefact Pages. **Aucune modification du workflow n'est nécessaire.**
+The `.github/workflows/deploy.yml` workflow runs `npm ci` then `npm run build`.
+`postbuild` follows on its own, and `out/_pagefind/` goes into the Pages
+artifact. **The workflow needs no changes at all.**
 
-### Pourquoi ça marche aussi avec un `basePath`
+### Why it survives a `basePath`
 
-C'est le seul vrai piège du montage. Deux chemins entrent en jeu :
+This is the one genuine trap in the setup. Two separate paths are involved:
 
-1. **Le chargement du bundle.** Nextra appelle
-   `addBasePath('/_pagefind/pagefind.js')` : Next préfixe donc tout seul le
-   `basePath` → `/mon-portfolio/_pagefind/pagefind.js`. Et comme le chemin se
-   termine par une extension, `trailingSlash: true` ne lui ajoute *pas* de
-   slash final (qui casserait l'import).
-2. **Les URLs des résultats.** Avec `output: 'export'`, Next écrit dans `out/`
-   **sans** imbriquer le `basePath`. Pagefind produit donc des URLs racine
-   (`/about/`, `/projects/`…). Nextra les passe à `next/link` et
-   `router.push()`, qui rajoutent le `basePath` à la navigation.
+1. **Loading the bundle.** Nextra calls
+   `addBasePath('/_pagefind/pagefind.js')`, so Next prefixes the `basePath`
+   itself → `/mon-portfolio/_pagefind/pagefind.js`. And because the path ends
+   in a file extension, `trailingSlash: true` does *not* append a trailing
+   slash — which would break the import.
+2. **The result URLs.** With `output: 'export'`, Next writes into `out/`
+   **without** nesting it under the `basePath`. Pagefind therefore produces
+   root-relative URLs (`/about/`, `/projects/`…). Nextra hands those to
+   `next/link` and `router.push()`, which add the `basePath` back on
+   navigation.
 
-Les deux bouts se recollent : **rien n'est à coder en dur**, et le même `out/`
-fonctionne à la racine d'un domaine comme sous `/mon-portfolio/`.
+The two ends meet: **nothing is hardcoded**, and the same `out/` works at a
+domain root or under `/mon-portfolio/`.
 
 ## Configuration
 
-`search` dans `next.config.mjs` ne pilote **pas** l'affichage de la barre de
-recherche (elle vient du thème `nextra-theme-docs`). Il ne contrôle que le
-balisage HTML utilisé par l'indexation :
+`search` in `next.config.mjs` does **not** control whether the search box is
+displayed — that comes from the `nextra-theme-docs` theme. It only controls the
+HTML markup used for indexing:
 
 ```js filename="next.config.mjs"
 const withNextra = nextra({
-  search: { codeblocks: false } // <pre> marqués data-pagefind-ignore
+  search: { codeblocks: false } // <pre> tagged data-pagefind-ignore
 })
 ```
 
-- `search: { codeblocks: false }` — indexe le texte, ignore les blocs de code.
-  C'est le réglage retenu : sur un portfolio, les extraits de code polluent les
-  résultats.
-- `search: true` — indexe aussi les blocs de code.
-- `search: false` — n'ignore plus rien de particulier ; **ne masque pas** la
-  barre de recherche.
+- `search: { codeblocks: false }` — indexes prose, ignores code blocks. This is
+  the setting in use: on a portfolio, code snippets only pollute the results.
+- `search: true` — indexes code blocks as well.
+- `search: false` — stops ignoring anything in particular. It does **not** hide
+  the search box.
 
-Pour retirer une page de l'index, mettez `searchable: false` dans son
-front-matter — c'est ce qui pilote l'attribut `data-pagefind-body` sur `<main>`.
+To keep a page out of the index, set `searchable: false` in its front matter —
+that is what drives the `data-pagefind-body` attribute on `<main>`.
 
-Pour masquer complètement la barre : `<Layout search={null} …>` dans
+To remove the search box entirely: `<Layout search={null} …>` in
 `app/layout.jsx`.
 
 ## Versions
 
-| Paquet | Version | Remarque |
+| Package | Version | Note |
 | --- | --- | --- |
-| `pagefind` | `1.5.2` (figée) | version exacte, sans `^` : le binaire est téléchargé depuis npm, on évite toute dérive |
-| `nextra` / `nextra-theme-docs` | `4.5.1` | Pagefind n'est *pas* une dépendance de Nextra, juste un producteur d'index |
-| Node | 24 LTS (CI) / ≥ 18.18 | `pagefind` publie des binaires linux-x64, darwin-arm64, windows-x64… |
+| `pagefind` | `1.5.2` (pinned) | Exact version, no `^`: the binary is downloaded from npm, so drift is worth avoiding |
+| `nextra` / `nextra-theme-docs` | `4.5.1` | Pagefind is *not* a Nextra dependency, just an index producer |
+| Node | 24 LTS (CI) / ≥ 18.18 | `pagefind` ships binaries for linux-x64, darwin-arm64, windows-x64… |
 
-Pagefind n'est utilisé qu'au **build** : rien n'est ajouté aux dépendances de
-production, et l'index livré n'est que du statique (JSON compressé + WebAssembly).
+Pagefind is a **build-time** tool only: nothing is added to the production
+dependencies, and what ships is plain static files (compressed JSON plus
+WebAssembly).

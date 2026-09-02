@@ -1,112 +1,113 @@
-# Mon Portfolio
+# Portfolio
 
-CV / portfolio interactif écrit en **MDX**, rendu par **[Nextra 4](https://nextra.site)**
-(basé sur Next.js), et déployé automatiquement sur **GitHub Pages** via GitHub
-Actions à chaque `git push`.
+An interactive CV / portfolio written in **MDX**, rendered by
+**[Nextra 4](https://nextra.site)** (built on Next.js), and deployed to
+**GitHub Pages** automatically on every push.
 
-Le site est un **export 100 % statique** : pas de serveur, pas de base de
-données, pas de coût d'hébergement. La recherche elle-même
-([Pagefind](https://pagefind.app)) tourne entièrement dans le navigateur.
-Écrire une page revient à créer un fichier Markdown.
+The site is a **fully static export**: no server, no database, nothing to pay
+for. Even the search ([Pagefind](https://pagefind.app)) runs entirely in the
+browser. Adding a page means writing a Markdown file.
 
-## Démarrer
+## Getting started
 
 ```bash
-npm install     # installe les dépendances
-npm run build   # obligatoire une fois : c'est lui qui construit l'index de recherche
+npm install     # install dependencies
+npm run build   # required once: this is what builds the search index
 npm run dev     # http://localhost:3000
 ```
 
-Édite les fichiers de `content/` : la page se recharge toute seule.
+Edit the files under `content/` — the page reloads on its own.
 
-**L'index de recherche est un instantané du dernier build.** Modifier un `.mdx`
-met la page à jour à chaud, mais pas les résultats de recherche — relance
-`npm run search:index` pour réindexer sans tout reconstruire. Sans build
-préalable, la barre affiche « Index de recherche indisponible » ; le reste du
-site fonctionne normalement.
+**The search index is a snapshot of the last build.** Editing an `.mdx` file
+updates the page live, but not the search results: run `npm run search:index`
+to reindex without rebuilding everything. With no build behind it, the search
+box reports "Index de recherche indisponible"; the rest of the site works
+normally.
 
-| Commande | Effet |
+| Command | What it does |
 | --- | --- |
-| `npm run dev` | Serveur de développement |
-| `npm run build` | Build statique dans `out/` + index de recherche |
-| `npm run search:index` | Réindexe seulement la recherche |
+| `npm run dev` | Development server |
+| `npm run build` | Static build into `out/`, plus the search index |
+| `npm run search:index` | Rebuilds the search index only |
 
-## Structure
+## Layout
 
 ```
 .
 ├── app/
-│   ├── layout.jsx               # mise en page globale (navbar, footer, thème)
-│   ├── globals.css              # styles globaux + fond décoratif du site
-│   ├── icon.svg                 # favicon et logo du pied de page
-│   └── [[...mdxPath]]/page.jsx  # relie les URLs aux fichiers MDX
-├── components/                  # composants maison utilisables dans les MDX
-├── content/                     # ← ton contenu, c'est ici que tu écris
-│   ├── _meta.js                 # ordre + libellés de la navigation
-│   └── *.mdx                    # une page = un fichier
-├── public/img/                  # images (logos, badges de certification)
-├── docs/                        # documentation du projet
-├── next.config.mjs              # config Next.js + export statique
-└── .github/workflows/deploy.yml # CI : build + déploiement Pages
+│   ├── layout.jsx               # global chrome (navbar, footer, theme)
+│   ├── globals.css              # global styles + the site's dotted backdrop
+│   ├── icon.svg                 # favicon, and the footer logo
+│   └── [[...mdxPath]]/page.jsx  # maps URLs onto the MDX files
+├── components/                  # in-house components, usable from MDX
+├── content/                     # ← your content lives here
+│   ├── _meta.js                 # navigation order and labels
+│   └── *.mdx                    # one file, one page
+├── public/img/                  # images (logos, certification badges)
+├── docs/                        # project documentation
+├── mdx-components.js            # which React components render the Markdown
+├── next.config.mjs              # Next.js config + static export
+└── .github/workflows/deploy.yml # CI: build and deploy to Pages
 ```
 
-## Écrire une page
+## Writing a page
 
-Créer `content/ma-page.mdx`, l'ajouter dans `content/_meta.js`. Rien d'autre.
+Create `content/my-page.mdx` and list it in `content/_meta.js`. That's the
+whole procedure.
 
-Chaque fichier commence par un front-matter :
+Every file opens with front matter:
 
 ```mdx
 ---
-title: Titre affiché dans l'onglet et les résultats de recherche
-description: Résumé pour le référencement et les partages sur les réseaux.
+title: Shown in the browser tab and in search results
+description: Summary used for SEO and link previews.
 ---
 ```
 
-| Clé | Rôle |
+| Key | Purpose |
 | --- | --- |
-| `title` | Titre de l'onglet, du référencement et de l'index de recherche |
-| `description` | Méta-description (SEO, partages) |
-| `searchable: false` | Exclut la page de la recherche. Elle reste accessible par URL |
+| `title` | Browser tab, SEO, and the search index |
+| `description` | Meta description (SEO, social previews) |
+| `searchable: false` | Keeps the page out of search. It stays reachable by URL |
 
-L'ordre et les libellés de la navigation se règlent dans
-[`content/_meta.js`](content/_meta.js) : la clé est le nom du fichier sans
-extension, la valeur le libellé affiché.
+Navigation order and labels are set in
+[`content/_meta.js`](content/_meta.js): the key is the filename without its
+extension, the value is the label to display.
 
-Les composants disponibles (`<Hero>`, `<Typewriter>`, `<Certifications>`…) sont
-documentés dans **[docs/components.md](docs/components.md)**.
+The available components (`<Hero>`, `<Typewriter>`, `<Certifications>`…) are
+documented in **[docs/components.md](docs/components.md)**.
 
-## Déployer
+## Deploying
 
-À faire une seule fois :
+One-time setup:
 
-1. Pousse le repo sur GitHub (branche `main`).
-2. **Settings → Pages → Build and deployment → Source : GitHub Actions**.
+1. Push the repository to GitHub (branch `main`).
+2. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-Chaque push sur `main` reconstruit et publie le site.
+Every push to `main` rebuilds and publishes the site.
 
-- Repo `mon-portfolio` → `https://USERNAME.github.io/mon-portfolio/`
-- Repo nommé `USERNAME.github.io` → `https://USERNAME.github.io/`
-  (mettre alors `PAGES_BASE_PATH: ""` dans `.github/workflows/deploy.yml`)
+- Repository `mon-portfolio` → `https://USERNAME.github.io/mon-portfolio/`
+- Repository named `USERNAME.github.io` → `https://USERNAME.github.io/`
+  (set `PAGES_BASE_PATH: ""` in `.github/workflows/deploy.yml` for this case)
 
 ## Documentation
 
-| Fichier | Contenu |
+| File | Contents |
 | --- | --- |
-| [docs/components.md](docs/components.md) | Les composants utilisables dans les MDX, avec leurs props |
-| [docs/search.md](docs/search.md) | Fonctionnement de la recherche Pagefind — à lire si elle casse |
+| [docs/components.md](docs/components.md) | The components you can use in MDX, with their props |
+| [docs/search.md](docs/search.md) | How the Pagefind search works — read this when it breaks |
 
-Pour le reste, la [documentation Nextra](https://nextra.site/docs) fait
-autorité.
+For anything beyond them, the [Nextra documentation](https://nextra.site/docs)
+is authoritative.
 
-## Reste à faire
+## Still to do
 
-1. **Remplacer les `USERNAME`** — encore présents dans `app/layout.jsx` et
-   `content/projects.mdx`.
-2. **Reprendre le contenu** de `about.mdx`, `experience.mdx` et `projects.mdx`.
-3. **Multilingue (i18n)** — Nextra gère le FR/EN via des sous-dossiers de locale.
+1. **Replace the `USERNAME` placeholders** — still present in `app/layout.jsx`
+   and `content/projects.mdx`.
+2. **Rewrite the content** of `about.mdx`, `experience.mdx` and `projects.mdx`.
+3. **Internationalisation** — Nextra handles FR/EN through locale subfolders.
 
-## Auteur
+## Author
 
 Maxime DEVOULX — [github.com/tw-nk-e](https://github.com/tw-nk-e)
 

@@ -1,17 +1,17 @@
-# Composants disponibles dans les MDX
+# Components available in MDX
 
-Référence des composants utilisables dans les fichiers de `content/`.
-Pour démarrer et déployer le projet, voir le [README](../README.md).
+Reference for the components you can use inside `content/`. To run and deploy
+the project, see the [README](../README.md).
 
-## Composants maison
+## In-house components
 
-Ils vivent dans `components/` et s'importent en chemin **relatif depuis
-`content/`**, donc toujours avec `../components/`.
+They live in `components/` and are imported by a path **relative to
+`content/`**, so always through `../components/`.
 
 ### `<Hero>`
 
-Bandeau d'accueil : badge animé, titre, accroche et bouton d'appel à l'action,
-chacun révélé légèrement après le précédent.
+Home page banner: animated badge, headline, tagline and call to action, each
+revealed just after the previous one.
 
 ```mdx
 import { Hero } from '../components/hero'
@@ -28,27 +28,27 @@ import { Hero } from '../components/hero'
 />
 ```
 
-| Prop | Type | Rôle |
+| Prop | Type | Purpose |
 | --- | --- | --- |
-| `headline` | texte ou JSX | Rend le `<h1>` de la page |
-| `subline` | texte ou JSX | Accroche sous le titre |
-| `badge` | texte ou JSX | Pastille à bordure animée. Décorative, non cliquable |
-| `cta` | `{ label, href }` | Bouton avec chevron animé au survol |
+| `headline` | text or JSX | Renders the page's `<h1>` |
+| `subline` | text or JSX | Tagline under the headline |
+| `badge` | text or JSX | Pill with an animated border. Decorative, not clickable |
+| `cta` | `{ label, href }` | Button with a chevron that draws itself on hover |
 
 > [!WARNING]
-> `Hero` **produit le `<h1>` de la page**. N'écris pas de `# Titre` en Markdown
-> à côté, sous peine d'avoir deux `<h1>` — mauvais pour le référencement et
-> pour les lecteurs d'écran.
+> `Hero` **produces the page's `<h1>`**. Do not write a Markdown `# Title`
+> beside it, or the page ends up with two `<h1>` elements — bad for search
+> engines and for screen readers.
 
-Le titre alimente aussi l'index de recherche : c'est lui qui apparaît comme
-titre du résultat, pas le `title` du front-matter.
+That headline also feeds the search index: it is what shows up as the result
+title, not the `title` from the front matter.
 
-Réglages : vitesse de la bordure du badge via `--badge-speed` dans
+Tuning: the badge border speed lives in `--badge-speed`, at the top of
 [`components/hero.module.css`](../components/hero.module.css).
 
 ### `<Typewriter>`
 
-Fait défiler des phrases caractère par caractère, en boucle.
+Types a list of phrases one character at a time, erases them, moves on.
 
 ```mdx
 import { Typewriter } from '../components/typewriter'
@@ -60,44 +60,43 @@ import { Typewriter } from '../components/typewriter'
 />
 ```
 
-| Prop | Défaut | Rôle |
+| Prop | Default | Purpose |
 | --- | --- | --- |
-| `text` | — | Une chaîne, ou une liste de chaînes à faire défiler |
-| `speed` | `100` | Millisecondes par caractère à la frappe |
-| `deleteSpeed` | `50` | Millisecondes par caractère à l'effacement |
-| `delay` | `1500` | Pause sur une phrase terminée avant de l'effacer |
-| `loop` | `false` | Recommence après la dernière phrase |
-| `cursor` | `"|"` | Caractère du curseur |
-| `className` | — | Pour surcharger la typographie |
+| `text` | — | A string, or a list of strings to cycle through |
+| `speed` | `100` | Milliseconds per character while typing |
+| `deleteSpeed` | `50` | Milliseconds per character while erasing |
+| `delay` | `1500` | How long a finished phrase is held before erasing |
+| `loop` | `false` | Start over after the last phrase |
+| `cursor` | `"\|"` | Cursor character |
+| `className` | — | To override the typography |
 
-Sans `loop`, la liste se déroule **une fois** en entier puis s'arrête. Toutes
-les phrases sont présentes dans le HTML pour les lecteurs d'écran et pour
-l'index de recherche, même celles non encore affichées.
+Without `loop`, the list plays through **once** in full and then stops. Every
+phrase is present in the HTML for screen readers and for the search index,
+including those not yet typed out.
 
 ### `<RevealFx>`
 
-L'animation d'apparition utilisée par le `Hero` : balayage de gauche à droite,
-léger flou et fondu. Utilisable seule pour animer n'importe quel bloc.
+The reveal animation the `Hero` is built on: a left-to-right wipe, a light blur
+and a fade. Usable on its own to bring in any block.
 
 ```mdx
 import { RevealFx } from '../components/reveal-fx'
 
 <RevealFx as="h2" delay={0.3} translateY={0.5}>
-  Une section qui apparaît en douceur
+  A section that eases into view
 </RevealFx>
 ```
 
-| Prop | Défaut | Rôle |
+| Prop | Default | Purpose |
 | --- | --- | --- |
-| `as` | `'div'` | Balise à produire |
-| `delay` | `0` | Secondes avant le démarrage |
-| `speed` | `1.5` | Durée en secondes |
-| `translateY` | `0` | Décalage vertical de départ — nombre en `rem`, ou toute longueur CSS |
+| `as` | `'div'` | Element to render |
+| `delay` | `0` | Seconds before the animation starts |
+| `speed` | `1.5` | Duration in seconds |
+| `translateY` | `0` | Starting vertical offset — a number in `rem`, or any CSS length |
 
 ### `<Certifications>`
 
-Grille de cartes de certification, avec pastille d'état calculée à partir de la
-date d'expiration.
+Grid of certification cards, with a status pill derived from the expiry date.
 
 ```mdx
 import { Certifications } from '../components/cert-card'
@@ -114,48 +113,49 @@ import { Certifications } from '../components/cert-card'
 />
 ```
 
-| Clé d'un item | Rôle |
+| Item key | Purpose |
 | --- | --- |
-| `title` | Nom de la certification |
-| `href` | Lien externe, ouvert dans un nouvel onglet |
-| `image` | Chemin depuis `public/`, ex. `/img/aws-sap.png` |
-| `expires` | Date ISO `AAAA-MM-JJ`, optionnelle |
+| `title` | Name of the certification |
+| `href` | External link, opened in a new tab |
+| `image` | Path from `public/`, e.g. `/img/aws-sap.png` |
+| `expires` | ISO date `YYYY-MM-DD`, optional |
 
-Comportement de `expires` : absente → aucune pastille (certification en cours) ;
-future → « Active · until … » ; passée → badge grisé et pastille « Expired ».
+How `expires` behaves: missing → no pill at all (certification in progress);
+in the future → "Active · until …"; in the past → dimmed badge and an
+"Expired" pill.
 
-Les images se déposent dans `public/img/`. Le chemin s'écrit **depuis la racine
-du site** (`/img/...`) : le composant ajoute lui-même le préfixe GitHub Pages.
+Images go in `public/img/`. Write the path **from the site root**
+(`/img/...`): the component adds the GitHub Pages prefix itself.
 
-## Composants Nextra
+## Nextra components
 
-Fournis par le thème, importables depuis `nextra/components` sans rien
-installer :
+Shipped with the theme, importable from `nextra/components` with nothing to
+install:
 
 ```mdx
 import { Cards, Callout, Steps, Tabs } from 'nextra/components'
 ```
 
-Les plus utiles ici :
+The ones that earn their place here:
 
-| Composant | Usage |
+| Component | Use |
 | --- | --- |
-| `Cards` / `Cards.Card` | Grille de liens vers d'autres pages |
-| `Callout` | Encart coloré (`type="default" \| "info" \| "warning" \| "error" \| "important"`) |
-| `Steps` | Numérote automatiquement les titres qu'il contient |
-| `Tabs` | Contenu à onglets |
-| `FileTree` | Arborescence de fichiers |
-| `Bleed` | Déborde de la colonne de contenu, pour une image large |
-| `Button` | Bouton du thème |
+| `Cards` / `Cards.Card` | Grid of links to other pages |
+| `Callout` | Coloured box (`type="default" \| "info" \| "warning" \| "error" \| "important"`) |
+| `Steps` | Numbers the headings it contains, automatically |
+| `Tabs` | Tabbed content |
+| `FileTree` | File tree diagram |
+| `Bleed` | Breaks out of the content column, for a wide image |
+| `Button` | The theme's button |
 
-Sont aussi exportés : `Banner`, `Collapse`, `ImageZoom`, `Mermaid`, `Playground`,
-`Popup`, `Select`, `Head`, `Search`, `MathJax`. Voir la
-[documentation Nextra](https://nextra.site/docs/built-ins).
+Also exported: `Banner`, `Collapse`, `ImageZoom`, `Mermaid`, `Playground`,
+`Popup`, `Select`, `Head`, `Search`, `MathJax`. See the
+[Nextra documentation](https://nextra.site/docs/built-ins).
 
-Markdown standard, GFM (tableaux, listes de tâches) et blocs de code coloriés
-fonctionnent partout, sans import.
+Plain Markdown, GFM (tables, task lists) and syntax-highlighted code blocks
+work everywhere, with no import.
 
 > [!NOTE]
-> Les alertes GitHub (`> [!NOTE]`, `> [!WARNING]`…) fonctionnent dans ce README,
-> mais **pas dans les pages MDX** : aucun plugin de Nextra ne les transforme,
-> elles y rendraient une simple citation. Utilise `<Callout>` à la place.
+> GitHub alerts (`> [!NOTE]`, `> [!WARNING]`…) work in this file, but **not in
+> MDX pages**: no Nextra plugin transforms them, so they would render as a
+> plain blockquote. Use `<Callout>` there instead.
