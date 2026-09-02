@@ -8,13 +8,12 @@ import './globals.css'
 // Site-wide metadata (browser tab, SEO, social sharing).
 export const metadata = {
   title: {
-    default: 'mdevoulx - Technical Leader Cloud & more.',
+    default: 'Maxime DEVOULX — AWS Cloud Architect & Technical Leader',
     // template: '%s | Maxime DEVOULX'
   },
-  description:
-    'Concevez des plateformes AWS solides, sécurisées et automatisées, pensées pour durer. ' +
-    "[Prénom Nom] est un expert Cloud AWS fort de plus de 10 ans d'expérience, " +
-    'qui aide équipes et entreprises à réussir sur le Cloud.'
+  description: "Concevez des plateformes solides, sécurisées et maîtrisées de bout en bout. Maxime DEVOULX est AWS Cloud Architect, fort de 12 ans d'IT dont 7 sur AWS, de la conception à l'exploitation.",
+  // Disable indexion by Google
+  robots: { index: false, follow: false }
 }
 
 // Navbar logo. `logo` accepts any JSX: inline SVG icon + tagline.
@@ -42,7 +41,7 @@ const logo = (
         MD
       </text>
     </svg>
-    <b>Technical Leader Cloud</b>
+    <b>Maxime DEVOULX</b>
   </span>
 )
 
