@@ -48,7 +48,7 @@ const logo = (
 
 // Top navigation bar.
 const navbar = (
-  <Navbar logo={logo} projectLink="https://github.com/USERNAME/mon-portfolio" />
+  <Navbar logo={logo} projectLink="https://github.com/tw-nk-e/portfolio" />
 )
 
 // Search bar (Pagefind). Only the wording is customised here — the index is
@@ -79,7 +79,7 @@ export default async function RootLayout({ children }) {
           // Alimente la sidebar de gauche à partir du dossier content/
           pageMap={await getPageMap()}
           // Lien "Éditer cette page" -> pointe vers ton repo
-          docsRepositoryBase="https://github.com/USERNAME/mon-portfolio/tree/main"
+          docsRepositoryBase="https://github.com/tw-nk-e/portfolio/tree/main"
           // Un CV n'a pas vraiment de "sidebar de docs" : on la garde discrète.
           sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: true }}
           // Disable some links
